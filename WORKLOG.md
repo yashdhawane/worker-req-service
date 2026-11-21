@@ -85,6 +85,22 @@ committed or tagged during this phase.
 - Final release tag: `v1.0.0`
 - Final release commit: `ed48257cedcf12181806fd30b6971c07dd2a99dd`
 
+## Reflection
+
+### Active time
+
+- Active time was not measured during the implementation; no duration is recorded.
+
+### Lessons learned
+
+- Separating the initial lifecycle and reopening milestones made acceptance and
+  review boundaries clear.
+- Test-first reopening slices exposed missing-reason, whitespace-reason,
+  state-preservation, and persistence requirements before the implementation was
+  considered complete.
+- Recording commands and outcomes prevents assumed validation from being
+  represented as executed validation.
+
 ## Remaining limitations
 
 - No external secret scanner or hosted CI validation was used.

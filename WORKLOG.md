@@ -50,7 +50,9 @@ committed or tagged during this phase.
 
 ## Milestone A commit and tag
 
-Pending: commit SHA and `initial-version` tag.
+- Initial implementation commit: `30b8c37167feab959dc340e051022c47e230ccf4`
+- Initial milestone tag: `initial-version`
+- Tag target: `30b8c37167feab959dc340e051022c47e230ccf4`
 
 ## Reopening milestone
 

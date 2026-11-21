@@ -1,42 +1,4 @@
 {
-  "requests": [
-    {
-      "id": "1a55f5a3-2c78-4be1-a755-fc30f3572a89",
-      "title": "first",
-      "description": "demo",
-      "priority": "high",
-      "status": "done",
-      "createdAt": "2026-11-21T13:38:08.976Z",
-      "updatedAt": "2026-11-21T13:39:44.128Z"
-    }
-  ],
-  "history": [
-    {
-      "id": "1754653f-df86-4b4a-b27a-76a0a0df5f84",
-      "requestId": "1a55f5a3-2c78-4be1-a755-fc30f3572a89",
-      "event": "created",
-      "timestamp": "2026-11-21T13:38:08.976Z",
-      "previousStatus": null,
-      "newStatus": "new",
-      "reason": null
-    },
-    {
-      "id": "ea752116-db78-4942-a376-dd33e4ea4c16",
-      "requestId": "1a55f5a3-2c78-4be1-a755-fc30f3572a89",
-      "event": "status_changed",
-      "timestamp": "2026-11-21T13:39:17.899Z",
-      "previousStatus": "new",
-      "newStatus": "in_progress",
-      "reason": null
-    },
-    {
-      "id": "a9b27ce0-3e83-4c7c-80d2-cca5a4e83264",
-      "requestId": "1a55f5a3-2c78-4be1-a755-fc30f3572a89",
-      "event": "status_changed",
-      "timestamp": "2026-11-21T13:39:44.128Z",
-      "previousStatus": "in_progress",
-      "newStatus": "done",
-      "reason": null
-    }
-  ]
+  "requests": [],
+  "history": []
 }

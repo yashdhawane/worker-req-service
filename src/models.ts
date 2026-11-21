@@ -18,7 +18,7 @@ export interface HistoryEvent {
   timestamp: string;
   previousStatus: RequestStatus | null;
   newStatus: RequestStatus;
-  reason: null;
+  reason: string | null;
 }
 
 export interface Store {

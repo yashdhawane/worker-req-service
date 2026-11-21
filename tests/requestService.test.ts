@@ -101,7 +101,7 @@ describe("RequestService", () => {
 
     await expect(
       service.changeStatus(created.id, "in_progress"),
-    ).rejects.toThrow("Invalid status transition");
+    ).rejects.toThrow("Reopening reason must be non-empty");
 
     expect((await service.getById(created.id)).status).toBe("done");
   });
@@ -128,14 +128,92 @@ describe("RequestService", () => {
     expect((await secondService.getById(created.id)).title).toBe("Persistent");
   });
 
-  it("does not allow reopening in Milestone A", async () => {
-    const created = await service.create({ title: "Initial", priority: "low" });
+  it("reopens a done request with a trimmed reason", async () => {
+    const created = await service.create({ title: "Reopening", priority: "low" });
+    await service.changeStatus(created.id, "in_progress");
+    await service.changeStatus(created.id, "done");
+
+    const reopened = await service.changeStatus(
+      created.id,
+      "in_progress",
+      "  Need more review  ",
+    );
+
+    expect(reopened.status).toBe("in_progress");
+    const history = await service.getHistory(created.id);
+    const reopening = history.at(-1);
+    expect(reopening?.previousStatus).toBe("done");
+    expect(reopening?.newStatus).toBe("in_progress");
+    expect(reopening?.reason).toBe("Need more review");
+  });
+
+  it("rejects reopening without a reason", async () => {
+    const created = await service.create({ title: "Missing reason", priority: "low" });
     await service.changeStatus(created.id, "in_progress");
     await service.changeStatus(created.id, "done");
 
     await expect(
       service.changeStatus(created.id, "in_progress"),
+    ).rejects.toThrow("Reopening reason must be non-empty");
+  });
+
+  it("rejects reopening with a whitespace-only reason", async () => {
+    const created = await service.create({ title: "Whitespace reason", priority: "low" });
+    await service.changeStatus(created.id, "in_progress");
+    await service.changeStatus(created.id, "done");
+
+    await expect(
+      service.changeStatus(created.id, "in_progress", "   "),
+    ).rejects.toThrow("Reopening reason must be non-empty");
+  });
+
+  it("rejects reopening attempts from new and in_progress", async () => {
+    const newRequest = await service.create({ title: "New", priority: "low" });
+    await expect(
+      service.changeStatus(newRequest.id, "done", "Not a reopening"),
     ).rejects.toThrow("Invalid status transition");
+
+    const inProgressRequest = await service.create({
+      title: "In progress",
+      priority: "medium",
+    });
+    await service.changeStatus(inProgressRequest.id, "in_progress");
+    await expect(
+      service.changeStatus(inProgressRequest.id, "in_progress", "Not allowed"),
+    ).rejects.toThrow("Invalid status transition");
+  });
+
+  it("preserves state and history after rejected reopening", async () => {
+    const created = await service.create({ title: "No mutation", priority: "high" });
+    await service.changeStatus(created.id, "in_progress");
+    await service.changeStatus(created.id, "done");
+
+    const before = await service.getById(created.id);
+    const historyBefore = await service.getHistory(created.id);
+
+    await expect(
+      service.changeStatus(created.id, "in_progress", "   "),
+    ).rejects.toThrow("Reopening reason must be non-empty");
+
+    expect(await service.getById(created.id)).toEqual(before);
+    expect(await service.getHistory(created.id)).toEqual(historyBefore);
+  });
+
+  it("preserves reopening across service instances", async () => {
+    const created = await service.create({
+      title: "Persistent reopening",
+      priority: "medium",
+    });
+    await service.changeStatus(created.id, "in_progress");
+    await service.changeStatus(created.id, "done");
+    await service.changeStatus(created.id, "in_progress", "  Reload test  ");
+
+    const reloaded = new RequestService(new JsonStorage(filePath));
+    expect((await reloaded.getById(created.id)).status).toBe("in_progress");
+    const reopening = (await reloaded.getHistory(created.id)).at(-1);
+    expect(reopening?.previousStatus).toBe("done");
+    expect(reopening?.newStatus).toBe("in_progress");
+    expect(reopening?.reason).toBe("Reload test");
   });
 
   it("initializes missing storage with empty collections", async () => {

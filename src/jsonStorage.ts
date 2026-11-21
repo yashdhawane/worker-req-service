@@ -43,7 +43,8 @@ function validHistory(value: unknown): value is HistoryEvent {
     (value.event === "created" || value.event === "status_changed") &&
     isTimestamp(value.timestamp) &&
     (value.previousStatus === null || isStatus(value.previousStatus)) &&
-    isStatus(value.newStatus) && value.reason === null;
+    isStatus(value.newStatus) &&
+    (value.reason === null || typeof value.reason === "string");
 }
 
 export class JsonStorage implements Storage {

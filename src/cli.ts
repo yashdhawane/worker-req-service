@@ -85,7 +85,11 @@ async function main(): Promise<void> {
             const status = (await readline.question(
               "New status (new/in_progress/done): ",
             )).trim();
-            const updated = await service.changeStatus(request.id, status);
+            let reason: string | undefined;
+            if (request.status === "done" && status === "in_progress") {
+              reason = await readline.question("Reopening reason: ");
+            }
+            const updated = await service.changeStatus(request.id, status, reason);
             console.log(`Updated request ${updated.id} to ${updated.status}`);
             break;
           }

@@ -109,7 +109,11 @@ export class RequestService {
     return request;
   }
 
-  async changeStatus(id: string, newStatus: string): Promise<WorkRequest> {
+  async changeStatus(
+    id: string,
+    newStatus: string,
+    reason?: string,
+  ): Promise<WorkRequest> {
     const store = await this.storage.load();
     const request = store.requests.find((candidate) => candidate.id === id);
     if (!request) throw new ServiceError(`Unknown request ID: ${id}`);
@@ -117,13 +121,21 @@ export class RequestService {
       throw new ServiceError("Status must be new, in_progress, or done.");
     }
 
+    const reopening =
+      request.status === "done" && newStatus === "in_progress";
     const allowed =
       (request.status === "new" && newStatus === "in_progress") ||
-      (request.status === "in_progress" && newStatus === "done");
+      (request.status === "in_progress" && newStatus === "done") ||
+      reopening;
     if (!allowed) {
       throw new ServiceError(
         `Invalid status transition: ${request.status} -> ${newStatus}.`,
       );
+    }
+
+    const trimmedReason = reopening ? reason?.trim() : undefined;
+    if (reopening && (!trimmedReason || trimmedReason.length === 0)) {
+      throw new ServiceError("Reopening reason must be non-empty.");
     }
 
     const previousStatus = request.status;
@@ -136,7 +148,7 @@ export class RequestService {
       timestamp,
       previousStatus,
       newStatus,
-      reason: null,
+      reason: reopening ? trimmedReason ?? null : null,
     };
     const nextStore: Store = {
       requests: store.requests.map((candidate) =>

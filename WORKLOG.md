@@ -56,7 +56,12 @@ committed or tagged during this phase.
 
 ## Reopening milestone
 
-Pending: not implemented.
+- Reopening commit: `718fbcf12e6fb9850e52e8e7045a817b6d78eadc`
+- Implemented `done -> in_progress` with trimmed non-empty reasons.
+- Added reopening, rejection, preservation, and persistence tests.
+- `npm test`: 18 tests passed.
+- `npm run typecheck`: passed.
+- CLI reopening smoke: attempted with redirected stdin. The environment did not deliver subsequent prompts to `node:readline/promises`; service behavior and prompt condition were reviewed and covered by the implementation tests.
 
 ## Security and PII audit
 

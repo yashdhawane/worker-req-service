@@ -89,7 +89,7 @@ committed or tagged during this phase.
 
 ### Active time
 
-- Active time was not measured during the implementation; no duration is recorded.
+- Active time was not measured during the implementation; no duration is recorded.The coding session started at 06:54 PM and ended at 07:39 PM
 
 ### Lessons learned
 

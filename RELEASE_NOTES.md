@@ -7,8 +7,8 @@
 - Initial tag: `initial-version`
 - Initial commit: `30b8c37167feab959dc340e051022c47e230ccf4`
 - Reopening commit: `718fbcf12e6fb9850e52e8e7045a817b6d78eadc`
-- Final tag: Pending final release tag
-- Final commit: Pending final release commit
+- Final tag: `v1.0.0`
+- Final commit: `ed48257cedcf12181806fd30b6971c07dd2a99dd`
 
 ## Included
 

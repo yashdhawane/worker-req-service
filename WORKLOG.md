@@ -82,6 +82,8 @@ committed or tagged during this phase.
 - The reopening CLI prompt is implemented and covered through service tests.
 - The interactive stdin smoke attempt did not reliably deliver subsequent prompts
   in this environment; it is not represented as a passing CLI smoke result.
+- Final release tag: `v1.0.0`
+- Final release commit: `ed48257cedcf12181806fd30b6971c07dd2a99dd`
 
 ## Remaining limitations
 

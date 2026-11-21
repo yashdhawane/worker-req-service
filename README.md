@@ -30,7 +30,8 @@ The CLI remains open until option `7. Exit` is selected.
 5. Select `5` and change `new -> in_progress -> done`.
 6. Select `6` to inspect the request history.
 
-Reopening is not enabled in this initial milestone.
+After a request reaches `done`, option `5` can reopen it to `in_progress`.
+The CLI prompts for a reopening reason only for that transition.
 
 ## Validation
 
@@ -49,3 +50,4 @@ and is not replaced. Unit tests use temporary directories.
 
 - One local process; concurrent multi-process writes are not supported.
 - No web interface, authentication, database service, or external integrations.
+- No reopening reason editing after history has been recorded.

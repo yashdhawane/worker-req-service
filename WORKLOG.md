@@ -65,9 +65,24 @@ committed or tagged during this phase.
 
 ## Security and PII audit
 
-Pending final milestone.
+- Inspected source, tests, configuration, package lock, store data,
+  documentation, Git history, and tracked files.
+- Text checks searched for credential formats, private-key markers,
+  password/token assignments, and email addresses.
+- Manual review found no credentials or private-key material.
+- Smoke-test request data was removed from `data/store.json`.
+- Rechecked the working tree and tracked files after cleanup.
+- Limitation: text-pattern and manual checks do not prove that every possible
+  secret or sensitive value is absent; no external secret scanner was used.
+
+## Validation record
+
+- `npm test`: 18/18 tests passed.
+- `npm run typecheck`: passed.
+- The reopening CLI prompt is implemented and covered through service tests.
+- The interactive stdin smoke attempt did not reliably deliver subsequent prompts
+  in this environment; it is not represented as a passing CLI smoke result.
 
 ## Remaining limitations
 
-- Reopening is not implemented.
-- Final release notes and final security audit are pending.
+- No external secret scanner or hosted CI validation was used.

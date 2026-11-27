@@ -167,9 +167,6 @@ export class RequestService {
     }
     return store.history
       .filter((event) => event.requestId === requestId)
-      .sort((left, right) =>
-        left.timestamp.localeCompare(right.timestamp) ||
-        left.id.localeCompare(right.id),
-      );
+      .sort((left, right) => left.timestamp.localeCompare(right.timestamp));
   }
 }

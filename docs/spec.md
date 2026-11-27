@@ -238,8 +238,9 @@ History is append-only during normal operations. The persisted collection is
 global. Viewing history for a request must return only events with the matching
 `requestId`.
 
-Display request history oldest first by `timestamp`. If timestamps are equal,
-use event ID ascending as the fallback order.
+Display request history oldest first by `timestamp`. When timestamps are equal,
+preserve the events' persisted append order. Event IDs identify events and do not
+determine event chronology.
 
 ## 8. JSON Persistence
 

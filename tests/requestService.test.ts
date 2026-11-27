@@ -6,6 +6,7 @@ import { JsonStorage } from "../src/jsonStorage.js";
 import { RequestService } from "../src/requestService.js";
 import { StorageError } from "../src/errors.js";
 import type { Storage } from "../src/jsonStorage.js";
+import type { Store } from "../src/models.js";
 
 describe("RequestService", () => {
   let directory: string;
@@ -120,6 +121,50 @@ describe("RequestService", () => {
     ]);
   });
 
+  it("preserves persisted append order when history timestamps tie", async () => {
+    const timestamp = "2026-11-27T20:00:00.000Z";
+    const store: Store = {
+      requests: [{
+        id: "request-1",
+        title: "Timestamp tie",
+        description: "",
+        priority: "high",
+        status: "in_progress",
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      }],
+      history: [
+        {
+          id: "z-created",
+          requestId: "request-1",
+          event: "created",
+          timestamp,
+          previousStatus: null,
+          newStatus: "new",
+          reason: null,
+        },
+        {
+          id: "a-started",
+          requestId: "request-1",
+          event: "status_changed",
+          timestamp,
+          previousStatus: "new",
+          newStatus: "in_progress",
+          reason: null,
+        },
+      ],
+    };
+    const storage: Storage = {
+      load: async () => store,
+      save: async () => {},
+    };
+    const fixtureService = new RequestService(storage);
+
+    expect(
+      (await fixtureService.getHistory("request-1")).map((event) => event.id),
+    ).toEqual(["z-created", "a-started"]);
+  });
+
   it("preserves requests across service instances", async () => {
     const firstService = new RequestService(new JsonStorage(filePath));
     const created = await firstService.create({ title: "Persistent", priority: "low" });
@@ -141,7 +186,7 @@ describe("RequestService", () => {
 
     expect(reopened.status).toBe("in_progress");
     const history = await service.getHistory(created.id);
-    const reopening = history.at(-1);
+    const reopening = history.find((event) => event.reason === "Need more review");
     expect(reopening?.previousStatus).toBe("done");
     expect(reopening?.newStatus).toBe("in_progress");
     expect(reopening?.reason).toBe("Need more review");
@@ -210,7 +255,9 @@ describe("RequestService", () => {
 
     const reloaded = new RequestService(new JsonStorage(filePath));
     expect((await reloaded.getById(created.id)).status).toBe("in_progress");
-    const reopening = (await reloaded.getHistory(created.id)).at(-1);
+    const reopening = (await reloaded.getHistory(created.id)).find(
+      (event) => event.reason === "Reload test",
+    );
     expect(reopening?.previousStatus).toBe("done");
     expect(reopening?.newStatus).toBe("in_progress");
     expect(reopening?.reason).toBe("Reload test");

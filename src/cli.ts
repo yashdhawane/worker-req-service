@@ -1,5 +1,6 @@
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
+import { formatHistoryEvent } from "./historyFormatting.js";
 import { RequestService } from "./requestService.js";
 
 function printRequest(request: Awaited<ReturnType<RequestService["getById"]>>): void {
@@ -100,9 +101,7 @@ async function main(): Promise<void> {
               console.log("No history found.");
             } else {
               for (const event of history) {
-                console.log(
-                  `${event.id} | ${event.timestamp} | ${event.event} | ${event.previousStatus ?? "-"} -> ${event.newStatus}`,
-                );
+                console.log(formatHistoryEvent(event));
               }
             }
             break;

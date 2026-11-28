@@ -43,12 +43,12 @@
 ```bash
 git clone https://github.com/yashdhawane/worker-req-service.git
 cd worker-req-service
-npm install
-git checkout initial-version
+git checkout v1.0.0
+npm ci
 ```
 
-For the final release, replace `initial-version` with the final release tag once
-it is published locally.
+These commands check out the final release tag before installing the locked
+dependencies.
 
 ## Storage initialization
 
